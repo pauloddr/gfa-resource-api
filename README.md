@@ -59,13 +59,10 @@ Finally, make sure the __entry point__ is correct. In the example above, it shou
 Then, assuming you named your function "tasks", the following endpoints will be served by your function:
 
 * `POST /tasks`
-* `POST /tasks/signin`
-* `POST /tasks/signout`
 * `GET /tasks`
 * `GET /tasks/:id`
 * `PUT|PATCH /tasks/:id`
 * `DELETE /tasks/:id`
-* `DELETE /tasks/signin`
 * `OPTIONS /tasks(/*)`
 
 Read more about how each endpoint works in the next section.
