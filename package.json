@@ -1,6 +1,6 @@
 {
   "name": "google-function-resource",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Resource management library for Google HTTP Functions",
   "keywords": [
     "google cloud",
@@ -27,8 +27,8 @@
   },
   "homepage": "https://github.com/pauloddr/google-function-resource#readme",
   "dependencies": {
-    "@google-cloud/datastore": "1.0.1",
-    "gstore-node": "1.2.0"
+    "@google-cloud/datastore": "1.0.2",
+    "gstore-node": "1.3.0"
   },
   "devDependencies": {
     "body-parser": "1.17.1",
