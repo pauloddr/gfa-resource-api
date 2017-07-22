@@ -49,7 +49,7 @@ Add the library to __package.json__:
   "name": "your-function",
   "version": "0.0.1",
   "dependencies": {
-    "google-function-resource": "0.1.1"
+    "google-function-resource": "0.2.0"
   }
 }
 ```
@@ -69,13 +69,6 @@ Read more about how each endpoint works in the next section.
 
 ## Actions
 
-All actions respond with a JSON object with a `code` attribute with the following possible string values:
-
-* `OK` - action has completed successfully
-* `BAD_REQUEST` - action has failed due to request not being in expected format
-* `NOT_FOUND` - endpoint not found, or resource not found
-* `INTERNAL_ERROR` - an unexpected error has occurred while performing the action
-
 For the next sections, keep in mind that the resource endpoint is determined by the name of your function. So when this document says:
 
 * `POST /resources`
@@ -91,7 +84,7 @@ And your function is named "tasks", then the correct endpoint will be:
 This endpoint creates a new resource.
 
 <table>
-<tr><th>Request Body</th><th>Response</th></tr>
+<tr><th>Request Body</th><th>Response (201)</th></tr>
 <tr><td>
 
 ```javascript
@@ -105,13 +98,10 @@ This endpoint creates a new resource.
 
 ```javascript
 {
-  "code": "OK",
-  "resource": {
-    "id": "12345",
-    "title": "My New Task",
-    "description": "description of my new task",
-    "createdOn": "..."
-  }
+  "id": "12345",
+  "title": "My New Task",
+  "description": "description of my new task",
+  "createdOn": "..."
 }
 ```
 
@@ -125,7 +115,7 @@ This endpoint creates a new resource.
 Returns a list of resources with pagination. Default page size is 20.
 
 <table>
-<tr><th>Request Query Parameters</th><th>Response</th></tr>
+<tr><th>Request Query Parameters</th><th>Response (200)</th></tr>
 <tr><td>
 
 * `/resources`
@@ -138,23 +128,26 @@ Returns a list of resources with pagination. Default page size is 20.
 
 </td><td>
 
+Body:
+
 ```javascript
 {
-  "code": "OK",
-  "resources": [
+  [
     {"id": "1", ...},
     {"id": "2", ...},
     ...
-  ],
-  "limit": 20,
-  "next": "NextPageKey000123"
+  ]
 }
 ```
+
+Headers:
+
+* `X-Next-Page-Cursor`: `"NextPageKey000123"`
 
 </td></tr>
 </table>
 
-The `next` attribute will be absent from the response if there are no more entries to fetch.
+The `X-Next-Page-Cursor` header will be absent if there are no more entries to fetch.
 
 (Filters and sorting are not yet supported.)
 
@@ -165,23 +158,19 @@ The `next` attribute will be absent from the response if there are no more entri
 Returns data of a single resource.
 
 <table>
-<tr><th>Request URI</th><th>Response</th></tr>
+<tr><th>Request URI</th><th>Response (200)</th></tr>
 <tr><td>
 
 * `/resources/12345`
-  * shows info of resource ID=12345
 
 </td><td>
 
 ```javascript
 {
-  "code": "OK",
-  "resource": {
-    "id": "12345",
-    "title": "My Task",
-    "description": "description of task",
-    "createdOn": "..."
-  }
+  "id": "12345",
+  "title": "My Task",
+  "description": "description of task",
+  "createdOn": "..."
 }
 ```
 
@@ -198,7 +187,7 @@ Updates data of a single resource.
 Both `PUT` and `PATCH` methods behave the same way, and partial data can be provided.
 
 <table>
-<tr><th>Request Body</th><th>Response</th></tr>
+<tr><th>Request Body</th><th>Response (200)</th></tr>
 <tr><td>
 
 ```javascript
@@ -211,12 +200,9 @@ Both `PUT` and `PATCH` methods behave the same way, and partial data can be prov
 
 ```javascript
 {
-  "code": "OK",
-  "resource": {
-    "id": "12345",
-    "title": "My edited Task",
-    // ... rest of fields
-  }
+  "id": "12345",
+  "title": "My edited Task",
+  // ... rest of fields
 }
 ```
 
@@ -230,16 +216,8 @@ Both `PUT` and `PATCH` methods behave the same way, and partial data can be prov
 Removes a resource.
 
 <table>
-<tr><th>Request Body</th><th>Response</th></tr>
-<tr><td>(empty)</td><td>
-
-```javascript
-{
-  "code": "OK"
-}
-```
-
-</td></tr>
+<tr><th>Request Body</th><th>Response (204)</th></tr>
+<tr><td>(empty)</td><td>(empty)</td></tr>
 </table>
 
 ## Configuration
@@ -287,11 +265,11 @@ const tasks = require('google-function-resource')({
     'Access-Control-Allow-Headers': 'origin, content-type, accept'
   }
 
-});
+})
 
 exports.handleRequest = function (req, res) {
   tasks.manage(req, res)
-};
+}
 ```
 
 If you want to customize Schema validators with your own functions, take a look at the [Gstore Schema documentation](https://sebelga.gitbooks.io/gstore-node/content/schema/).
