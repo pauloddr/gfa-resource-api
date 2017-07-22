@@ -128,20 +128,19 @@ Returns a list of resources with pagination. Default page size is 20.
 
 </td><td>
 
-Body:
+__Body:__
 
 ```javascript
-{
-  [
-    {"id": "1", ...},
-    {"id": "2", ...},
-    ...
-  ]
-}
+[
+  {"id": "1", ...},
+  {"id": "2", ...},
+  ...
+]
 ```
 
-Headers:
+__Headers:__
 
+* `X-Page-Size`: `20`
 * `X-Next-Page-Cursor`: `"NextPageKey000123"`
 
 </td></tr>
@@ -161,7 +160,7 @@ Returns data of a single resource.
 <tr><th>Request URI</th><th>Response (200)</th></tr>
 <tr><td>
 
-* `/resources/12345`
+`/resources/12345`
 
 </td><td>
 
@@ -234,7 +233,10 @@ const tasks = require('google-function-resource')({
 
   // Datastore settings.
   datastore: {
-    namespace: undefined
+    namespace: undefined,
+
+    // Default page size when listing resources.
+    limit: 20
   },
 
   // You must provide the full schema.
@@ -257,12 +259,17 @@ const tasks = require('google-function-resource')({
     }
   },
 
-  // Customize CORS headers here to anything you'd like.
-  // Multiple headers are accepted.
+  // Customize CORS headers here.
   cors: {
-    'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE',
-    'Access-Control-Allow-Headers': 'origin, content-type, accept'
+    'Access-Control-Allow-Headers': 'origin, content-type, accept',
+
+    // Better secure your API by allowing only specific domains.
+    'Access-Control-Allow-Origin': '*',
+
+    // Make sure you keep the exposed headers below
+    //   or pagination may fail on the client side.
+    'Access-Control-Expose-Headers': 'x-next-page-cursor, x-page-size'
   }
 
 })
