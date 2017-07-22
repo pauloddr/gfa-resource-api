@@ -35,11 +35,11 @@ const tasks = require('google-function-resource')({
       excludeFromIndexes: true
     }
   }
-});
+})
 
 exports.handleRequest = function (req, res) {
-  tasks.manage(req, res);
-};
+  tasks.manage(req, res)
+}
 ```
 
 Add the library to __package.json__:
@@ -49,7 +49,7 @@ Add the library to __package.json__:
   "name": "your-function",
   "version": "0.0.1",
   "dependencies": {
-    "google-function-resource": "0.1.0"
+    "google-function-resource": "0.1.1"
   }
 }
 ```
@@ -63,7 +63,7 @@ Then, assuming you named your function "tasks", the following endpoints will be 
 * `GET /tasks/:id`
 * `PUT|PATCH /tasks/:id`
 * `DELETE /tasks/:id`
-* `OPTIONS /tasks(/*)`
+* `OPTIONS /tasks`
 
 Read more about how each endpoint works in the next section.
 
@@ -249,23 +249,22 @@ Settings can be customized upon requiring the library, and have the following de
 ```javascript
 const tasks = require('google-function-resource')({
 
-  // Resource name.
-  name: 'Task',
+  // Resource name. Must be set!
+  // It will be used as the entity name in Datastore.
+  // Recommended format: singular, capitalized. Ex: "Task"
+  name: null,
 
   // Datastore settings.
   datastore: {
-    kind: 'Task', // this defaults to resource name
     namespace: undefined
   },
 
-  // You can overwrite the full schema.
-  schema:  {
-    title: {
+  // You must provide the full schema.
+  // This is just a working placeholder.
+  schema: {
+    name: {
       type: 'string',
-      required: true
-    },
-    description: {
-      type: 'string'
+      excludeFromIndexes: true
     },
     createdOn: {
       type: 'datetime',
@@ -283,13 +282,15 @@ const tasks = require('google-function-resource')({
   // Customize CORS headers here to anything you'd like.
   // Multiple headers are accepted.
   cors: {
-    "Access-Control-Allow-Origin": "*"
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE',
+    'Access-Control-Allow-Headers': 'origin, content-type, accept'
   }
 
 });
 
 exports.handleRequest = function (req, res) {
-  tasks.manage(req, res);
+  tasks.manage(req, res)
 };
 ```
 
