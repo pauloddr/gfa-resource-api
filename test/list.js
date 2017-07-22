@@ -19,41 +19,29 @@ describe('list', function () {
 
   it('returns a list of resources with default settings', function (done) {
     app.get('/tasks').end(function (err, res) {
-      expect(res.body.code).to.equal('OK')
-      expect(res.body.resources.length).to.equal(20)
-      expect(res.body.next).to.exist
+      expect(res.statusCode).to.equal(200)
+      expect(res.body.length).to.equal(20)
+      expect(res.headers['x-next-page-cursor']).to.exist
       done()
     })
   })
 
   it('returns a list of resources with limit', function (done) {
     app.get('/tasks').query({limit: 15}).end(function (err, res) {
-      expect(res.body.code).to.equal('OK')
-      expect(res.body.resources.length).to.equal(15)
-      expect(res.body.next).to.exist
+      expect(res.statusCode).to.equal(200)
+      expect(res.body.length).to.equal(15)
+      expect(res.headers['x-next-page-cursor']).to.exist
       done()
     })
   })
 
   it('returns a list of resources with start', function (done) {
     app.get('/tasks').query({limit: 20}).end(function (err, res) {
-      expect(res.body.next).to.exist
-      start = res.body.next
+      start = res.headers['x-next-page-cursor']
+      expect(start).to.exist
       app.get('/tasks').query({start}).end(function (err, res) {
-        expect(res.body.code).to.equal('OK')
-        expect(res.body.resources.length).to.equal(10)
-        done()
-      })
-    })
-  })
-
-  it('sets limit to 20 on invalid values', function (done) {
-    app.get('/tasks').query({limit: -1}).end(function (err, res) {
-      expect(res.body.code).to.equal('OK')
-      expect(res.body.limit).to.equal(20)
-      app.get('/tasks').query({limit: 99999}).end(function (err, res) {
-        expect(res.body.code).to.equal('OK')
-        expect(res.body.limit).to.equal(20)
+        expect(res.statusCode).to.equal(200)
+        expect(res.body.length).to.equal(10)
         done()
       })
     })

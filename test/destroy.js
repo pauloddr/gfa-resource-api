@@ -23,18 +23,18 @@ describe('destroy', function () {
 
   it('deletes resource', function (done) {
     app.del(`/tasks/${resource.id}`).end(function (err, res) {
-      expect(res.body.code).to.equal('OK')
+      expect(res.statusCode).to.equal(204)
       app.get(`/tasks/${resource.id}`).end(function (err, res) {
-        expect(res.body.code).to.equal('NOT_FOUND') // not logged in
+        expect(res.statusCode).to.equal(404)
         done()
       })
     })
   })
 
   it('returns 404 if resourceId does not exist', function (done) {
-    // resource.id has been deleted by a previous test
+    // resource.id was deleted by the previous test
     app.del(`/tasks/${resource.id}`).end(function (err, res) {
-      expect(res.body.code).to.equal('NOT_FOUND')
+      expect(res.statusCode).to.equal(404)
       done()
     })
   })

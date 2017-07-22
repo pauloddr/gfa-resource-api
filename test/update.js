@@ -21,7 +21,7 @@ describe('update', function () {
 
   it('validates input', function (done) {
     app.put(`/tasks/${resource.id}`).send({email: 'invalidemail'}).end(function (err, res) {
-      expect(res.body.code).to.equal('BAD_REQUEST')
+      expect(res.statusCode).to.equal(422)
       done()
     })
   })
@@ -29,13 +29,13 @@ describe('update', function () {
   it('updates resource', function (done) {
     let data = {title: 'Changed', description: 'changed'}
     app.put(`/tasks/${resource.id}`).send(data).end(function (err, res) {
-      expect(res.body.code).to.equal('OK')
-      expect(res.body.resource.title).to.equal('Changed')
-      expect(res.body.resource.description).to.equal('changed')
+      expect(res.statusCode).to.equal(200)
+      expect(res.body.title).to.equal('Changed')
+      expect(res.body.description).to.equal('changed')
       app.get(`/tasks/${resource.id}`).end(function (err, res) {
-        expect(res.body.code).to.equal('OK')
-        expect(res.body.resource.title).to.equal('Changed')
-        expect(res.body.resource.description).to.equal('changed')
+        expect(res.statusCode).to.equal(200)
+        expect(res.body.title).to.equal('Changed')
+        expect(res.body.description).to.equal('changed')
         done()
       })
     })
