@@ -1,13 +1,11 @@
-'use strict';
+'use strict'
 
-const config = require('./lib/configuration');
+const config = require('./lib/configuration')
 
 module.exports = function (customConfig) {
+  config.override(customConfig)
 
-  config.override(customConfig);
+  const manage = require('./lib/manage')
 
-  const manage = require('./lib/manage');
-
-  return {manage};
-
-};
+  return {manage}
+}
