@@ -14,31 +14,16 @@ It stores data in [Google Datastore](https://cloud.google.com/datastore/) using 
 For a resource named "Task" for example, create a new Google HTTP Function to manage your resource with the following code:
 
 ```javascript
-const tasks = require('google-function-resource')({
-  name: 'Task',
-  schema: {
-    title: {
-      type: 'string',
-      required: true
-    },
-    description: {
-      type: 'string'
-    },
-    createdOn: {
-      type: 'datetime',
-      write: false,
-      excludeFromIndexes: true
-    },
-    modifiedOn: {
-      type: 'datetime',
-      write: false,
-      excludeFromIndexes: true
-    }
-  }
-})
+const GoogleFunctionResource = require('google-function-resource')
+
+const Tasks = new GoogleFunctionResource('Task')
+
+// Define the schema.
+Tasks.schema.field('title')
+Tasks.schema.field('description')
 
 exports.handleRequest = function (req, res) {
-  tasks.manage(req, res)
+  Tasks.manage(req, res)
 }
 ```
 
@@ -54,13 +39,16 @@ Add the library to __package.json__:
 }
 ```
 
-Finally, make sure the __entry point__ is correct. In the example above, it should be `handleRequest`.
+Finally, make sure the __entry point__ is correct. In the example above, it should be `handleRequest`. You can change it to your liking, just make sure they're the same value.
 
-Then, assuming you named your function "tasks", the following endpoints will be served by your function:
+Click __Save__ to deploy your new function.
+
+Then, assuming you named your function "tasks", the following endpoints will be served:
 
 * `POST /tasks`
-* `GET /tasks`
-* `GET /tasks/:id`
+* `GET|HEAD /tasks`
+* `GET|HEAD /tasks/:id`
+* `GET /tasks/schema`
 * `PUT|PATCH /tasks/:id`
 * `DELETE /tasks/:id`
 * `OPTIONS /tasks`
@@ -69,17 +57,17 @@ Read more about how each endpoint works in the next section.
 
 ## Actions
 
-For the next sections, keep in mind that the resource endpoint is determined by the name of your function. So when this document says:
-
-* `POST /resources`
-
-And your function is named "tasks", then the correct endpoint will be:
+For the next sections, keep in mind that the resource path is determined by the name of your function. So when this document says:
 
 * `POST /tasks`
 
+It assumes that the function is named "tasks". If you named your function "notes", the endpoint will be instead:
+
+* `POST /notes`
+
 ### Create Resource
 
-* `POST /resources`
+* `POST /tasks`
 
 This endpoint creates a new resource.
 
@@ -100,8 +88,7 @@ This endpoint creates a new resource.
 {
   "id": "12345",
   "title": "My New Task",
-  "description": "description of my new task",
-  "createdOn": "..."
+  "description": "description of my new task"
 }
 ```
 
@@ -110,7 +97,7 @@ This endpoint creates a new resource.
 
 ### List Resources
 
-* `GET /resources`
+* `GET /tasks`
 
 Returns a list of resources with pagination. Default page size is 20.
 
@@ -118,11 +105,11 @@ Returns a list of resources with pagination. Default page size is 20.
 <tr><th>Request Query Parameters</th><th>Response (200)</th></tr>
 <tr><td>
 
-* `/resources`
+* `/tasks`
   * first 20 resources
-* `/resources?limit=10`
+* `/tasks?limit=10`
   * first 10 resources
-* `/resources?start=NextPageKey000123`
+* `/tasks?start=NextPageKey000123`
   * first 20 resources
   * starting from key "NextPageKey000123"
 
@@ -152,7 +139,7 @@ The `X-Next-Page-Cursor` header will be absent if there are no more entries to f
 
 ### Show Resource
 
-* `GET /resources/:id`
+* `GET /tasks/:id`
 
 Returns data of a single resource.
 
@@ -160,7 +147,7 @@ Returns data of a single resource.
 <tr><th>Request URI</th><th>Response (200)</th></tr>
 <tr><td>
 
-`/resources/12345`
+`/tasks/12345`
 
 </td><td>
 
@@ -168,8 +155,7 @@ Returns data of a single resource.
 {
   "id": "12345",
   "title": "My Task",
-  "description": "description of task",
-  "createdOn": "..."
+  "description": "description of task"
 }
 ```
 
@@ -178,8 +164,8 @@ Returns data of a single resource.
 
 ### Update Resource
 
-* `PUT /resources/:id`
-* `PATCH /resources/:id`
+* `PUT /tasks/:id`
+* `PATCH /tasks/:id`
 
 Updates data of a single resource.
 
@@ -210,13 +196,35 @@ Both `PUT` and `PATCH` methods behave the same way, and partial data can be prov
 
 ### Destroy Resource
 
-* `DELETE /resources/:id`
+* `DELETE /tasks/:id`
 
 Removes a resource.
 
 <table>
 <tr><th>Request Body</th><th>Response (204)</th></tr>
-<tr><td>(empty)</td><td>(empty)</td></tr>
+<tr><td>(empty)</td><td></td></tr>
+</table>
+
+### Resource Schema
+
+* `GET /tasks/schema`
+
+Returns the resource schema. Useful for building automated forms.
+
+<table>
+<tr><th>Request Body</th><th>Response (200)</th></tr>
+<tr><td>(empty)</td><td>
+
+```javascript
+{
+  "fields": [
+    {"name": "title", "type": "string", "required": "true"},
+    {"name": "description", "type": "string", "length": 2000}
+  ]
+}
+```
+
+</td></tr>
 </table>
 
 ## Configuration

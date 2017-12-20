@@ -4,7 +4,7 @@ const Gstore = require('gstore-node')
 
 // After changing this object,
 //   make sure to copy/paste it into README.
-let configuration = {
+var defaults = {
 
   // Resource name. Must be set!
   // It will be used as the entity name in Datastore.
@@ -41,35 +41,22 @@ let configuration = {
 
   // Customize CORS headers here.
   cors: {
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE',
-    'Access-Control-Allow-Headers': 'origin, content-type, accept',
+    'Access-Control-Allow-Methods': 'GET,HEAD,POST,PUT,PATCH,DELETE',
+    'Access-Control-Allow-Headers': 'origin,accept,content-type',
 
     // Better secure your API by allowing only specific domains.
     'Access-Control-Allow-Origin': '*',
 
     // Make sure you keep the exposed headers below
     //   or pagination may fail on the client side.
-    'Access-Control-Expose-Headers': 'x-next-page-cursor, x-page-size'
+    'Access-Control-Expose-Headers': 'x-next-page-cursor,x-page-size'
+  },
+
+  // Default headers for all responses.
+  headers: {
+    'Content-Type': 'application/json'
   }
 
 }
 
-configuration.override = function _override (config) {
-  /* istanbul ignore if */
-  if (!config) {
-    return
-  }
-  configuration.name = config.name
-  _set('datastore', config)
-  _set('schema', config)
-  _set('cors', config)
-}
-
-function _set (section, config) {
-  if (!config || !config[section]) {
-    return
-  }
-  configuration[section] = config[section]
-}
-
-module.exports = configuration
+module.exports = defaults
