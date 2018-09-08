@@ -1,9 +1,12 @@
-# google-function-resource
+# No Longer Maintained
 
-[![Build Status](https://semaphoreci.com/api/v1/pauloddr/google-function-resource/branches/master/shields_badge.svg)](https://semaphoreci.com/pauloddr/google-function-resource)
-[![Test Coverage](https://lima.codeclimate.com/github/pauloddr/google-function-resource/badges/coverage.svg)](https://lima.codeclimate.com/github/pauloddr/google-function-resource/coverage)
-[![Code Climate](https://lima.codeclimate.com/github/pauloddr/google-function-resource/badges/gpa.svg)](https://lima.codeclimate.com/github/pauloddr/google-function-resource)
-[![npm version](https://badge.fury.io/js/google-function-resource.svg)](https://badge.fury.io/js/google-function-resource)
+This project has been deprecated in favor of [@gf-apis/resource-api](https://github.com/gf-apis/resource-api).
+
+Old README archived below.
+
+---
+
+# google-function-resource
 
 A simple resource management system for [Google Cloud HTTP Functions](https://cloud.google.com/functions/docs/writing/http).
 
