@@ -1,8 +1,8 @@
-# No Longer Maintained
+### THIS PROJECT HAS BEEN DISCONTINUED.
 
-This project has been deprecated in favor of [@gf-apis/resource-api](https://github.com/gf-apis/resource-api).
+Read more [here](https://github.com/pauloddr/gfa-guides/blob/master/README.md).
 
-Old README archived below.
+Original README archived below.
 
 ---
 
